@@ -1,0 +1,21 @@
+{
+  "artifact": "D:\\modernisation\\input\\banca.war",
+  "output_dir": "D:\\modernisation\\decompiler-out",
+  "tools_dir": "D:\\modernisation\\tools",
+  "runner": "local",
+  "jdk": {
+    "home": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.13.11-hotspot",
+    "recompile_home": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.432.6-hotspot",
+    "timeout_s": 7200
+  },
+  "app_package_prefix": "",
+  "decompile": true,
+  "decompilers": ["vineflower", "cfr", "procyon"],
+  "recompile": true,
+  "recompile_limit": 0,
+  "jdeps": true,
+  "sbom": true,
+  "syft_path": "D:\\modernisation\\tools\\syft.exe",
+  "gitleaks": true,
+  "gitleaks_path": "D:\\modernisation\\tools\\gitleaks.exe"
+}

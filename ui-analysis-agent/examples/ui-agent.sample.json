@@ -1,0 +1,40 @@
+{
+  "app": {
+    "name": "BANCA",
+    "base_url": "https://banca-uat.example.internal/banca",
+    "login_url": "https://banca-uat.example.internal/banca/login.do",
+    "scope_prefixes": ["/banca/"],
+    "start_paths": [],
+    "declared_paths_file": "D:\\modernisation\\decompiler-out\\actions.json",
+    "sample_values": {},
+    "description": "Bancassurance servicing and recording platform used by branch operations."
+  },
+  "browser": {
+    "engine": "ie",
+    "edge_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "iedriver_path": "D:\\modernisation\\tools\\IEDriverServer.exe",
+    "ignore_protected_mode_settings": false,
+    "proxy": "direct",
+    "page_timeout_s": 60,
+    "window": [1600, 1000]
+  },
+  "login": { "mode": "form" },
+  "roles": {
+    "maker":   { "username": "ops.maker.test",   "password_env": "UIA_PWD_MAKER",   "description": "Branch operations maker" },
+    "checker": { "username": "ops.checker.test", "password_env": "UIA_PWD_CHECKER", "description": "Operations checker / approver" }
+  },
+  "safety": { "mode": "read_only" },
+  "limits": { "max_steps_per_role": 150, "max_llm_calls": 2000, "max_minutes": 240 },
+  "phases": { "explore": true, "access_check": true, "probe": false, "design": true, "report": true },
+  "design": { "target_design_system": "Fluent UI React v9" },
+  "ai": {
+    "endpoint": "",
+    "model": "",
+    "endpoint_env": "AZURE_OPENAI_ENDPOINT",
+    "model_env": "AZURE_OPENAI_DEPLOYMENT",
+    "api_key_env": "AZURE_OPENAI_API_KEY",
+    "runtime": "direct",
+    "copilot": { "cli_path": null }
+  },
+  "output_dir": "D:\\modernisation\\ui-analysis-out"
+}

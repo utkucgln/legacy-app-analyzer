@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+*.spec
+# analysis outputs and local configs (may contain customer data)
+*-out/
+ui-analysis-out/
+code-analysis-out/
+decompiler-out/
+tools/
+*.local.json
