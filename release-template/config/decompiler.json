@@ -1,0 +1,20 @@
+{
+  "artifact": "..\\input\\app.war",
+  "output_dir": "..\\work\\decompiler-out",
+  "tools_dir": "..\\legacy-decompiler\\tools",
+  "runner": "local",
+  "jdk": {
+    "home": "",
+    "recompile_home": "",
+    "heap": "1g",
+    "timeout_s": 7200
+  },
+  "app_package_prefix": "",
+  "decompile": true,
+  "decompilers": ["vineflower", "cfr", "procyon"],
+  "recompile": true,
+  "recompile_limit": 0,
+  "jdeps": true,
+  "sbom": false,
+  "gitleaks": false
+}

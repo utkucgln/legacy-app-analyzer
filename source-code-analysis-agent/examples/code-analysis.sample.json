@@ -1,0 +1,31 @@
+{
+  "input": {
+    "decompiler_output": "D:\\modernisation\\decompiler-out",
+    "source_dirs": [],
+    "web_dirs": []
+  },
+  "output_dir": "D:\\modernisation\\code-analysis-out",
+  "ai": {
+    "endpoint": "",
+    "model": "",
+    "api_style": "v1",
+    "api_version": "2025-04-01-preview",
+    "auth_header": "api-key",
+    "headers": {},
+    "endpoint_env": "AZURE_OPENAI_ENDPOINT",
+    "model_env": "AZURE_OPENAI_DEPLOYMENT",
+    "api_key_env": "AZURE_OPENAI_API_KEY"
+  },
+  "analysis": {
+    "target_stack": "Java 21 LTS, Spring Boot 3 (Spring MVC REST + Spring Data JPA + Spring Batch/Scheduler), a React single-page front end, containerised on Azure (Container Apps or AKS) with Azure SQL or PostgreSQL, Entra ID authentication",
+    "max_classes_per_component": 25,
+    "max_components": 60,
+    "max_model_calls": 2500,
+    "idle_timeout_s": 300,
+    "turn_timeout_s": 2400,
+    "session_attempts": 2,
+    "max_error_retries": 5,
+    "wire_api": "responses",
+    "cli_path": null
+  }
+}

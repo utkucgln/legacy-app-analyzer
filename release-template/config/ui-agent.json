@@ -1,0 +1,51 @@
+{
+  "app": {
+    "name": "<application name>",
+    "base_url": "https://<uat-host>/<context>",
+    "login_url": "https://<uat-host>/<context>/login.do",
+    "scope_prefixes": ["/<context>/"],
+    "start_paths": [],
+    "declared_paths_file": "..\\work\\decompiler-out\\actions.json",
+    "sample_values": {},
+    "modules": [],
+    "description": "<one sentence on what the application is used for and by whom>"
+  },
+  "browser": {
+    "engine": "edge",
+    "edge_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "iedriver_path": "..\\ui-analyst\\drivers\\IEDriverServer.exe",
+    "ignore_protected_mode_settings": false,
+    "proxy": "direct",
+    "page_timeout_s": 60,
+    "window": [1600, 1000]
+  },
+  "login": {
+    "mode": "form",
+    "username_selector": null,
+    "password_selector": null,
+    "submit_selector": null,
+    "success_text": null
+  },
+  "roles": {
+    "operator": { "username": "<operator test user>", "password_env": "UIA_PWD_OPERATOR", "description": "Day-to-day user who records data" },
+    "approver": { "username": "<approver test user>", "password_env": "UIA_PWD_APPROVER", "description": "Reviews and approves records" }
+  },
+  "safety": { "mode": "read_only" },
+  "limits": { "max_steps_per_role": 150, "max_llm_calls": 2000, "max_minutes": 240 },
+  "phases": { "explore": true, "access_check": true, "probe": false, "design": true, "report": true },
+  "design": { "target_design_system": "Fluent UI React v9" },
+  "ai": {
+    "endpoint": "https://<apim-gateway-host>/<api-url-suffix>",
+    "model": "<deployment-name>",
+    "api_style": "deployments",
+    "api_version": "2025-04-01-preview",
+    "auth_header": "api-key",
+    "headers": {},
+    "endpoint_env": "AZURE_OPENAI_ENDPOINT",
+    "model_env": "AZURE_OPENAI_DEPLOYMENT",
+    "api_key_env": "AZURE_OPENAI_API_KEY",
+    "runtime": "direct",
+    "copilot": { "cli_path": null, "wire_api": "responses", "reasoning_effort": null }
+  },
+  "output_dir": "..\\work\\ui-analysis-out"
+}

@@ -1,0 +1,18 @@
+.venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+*.spec
+# analysis outputs and local configs (may contain customer data)
+*-out/
+ui-analysis-out/
+code-analysis-out/
+decompiler-out/
+tools/
+*.local.json
+
+# executable builds (build_exe.ps1 / build-release.ps1): large binaries, distribute separately
+.venv-build/
+release/

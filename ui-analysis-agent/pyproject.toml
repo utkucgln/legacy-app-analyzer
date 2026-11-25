@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-ui-analyst"
+version = "1.0.0"
+description = "Multi-agent AI exploration of legacy web applications (Edge IE mode or Edge) with role-based access analysis."
+requires-python = ">=3.10"
+dependencies = ["selenium>=4.20"]
+
+[project.optional-dependencies]
+edge = ["playwright>=1.45"]
+copilot = ["github-copilot-sdk==1.0.34; python_version >= '3.11'"]  # validated version (pins Copilot runtime 1.0.112)
+build = ["pyinstaller>=6.0"]
+
+[project.scripts]
+ui-analyst = "uiagent.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["uiagent*"]
