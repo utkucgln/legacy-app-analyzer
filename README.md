@@ -20,8 +20,6 @@ Three tools that recover how a legacy Java web application works, from the deplo
 
 **What it analyses:** Java web applications (WAR, or EAR with WARs) built on servlets/JSP. The deepest deterministic extraction covers Struts 1, Spring XML configuration, Hibernate / JPA, Quartz and `web.xml`. Other Java frameworks are decompiled and analysed by the AI agents with fewer deterministic extractions. The UI Analyst works with any browser-based application.
 
-How the executable path was validated, and its known limits: [HANDOVER-READINESS-REPORT.md](HANDOVER-READINESS-REPORT.md).
-
 ## The three tools
 
 Each one has its own installer, configuration, README and **PREREQUISITES**. They can run on the same Windows machine, including the application server itself, or on separate VMs.
