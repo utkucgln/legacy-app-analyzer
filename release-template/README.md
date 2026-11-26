@@ -128,4 +128,4 @@ The analyst works in read-only mode: it never clicks save, submit, approve, dele
 
 ## 6. Help
 
-Each tool's `check` prints the most likely fix for any failure. The full documentation for each tool (all configuration keys, outputs and troubleshooting) is in the README and PREREQUISITES of its folder in the repository: `code-decompiler/`, `source-code-analysis-agent/`, `ui-analysis-agent/`.
+Step-by-step instructions for every phase, the questions for your APIM team, and a troubleshooting table are in `HANDOVER-GUIDE.md` in the repository. Each tool's `check` prints the most likely fix for any failure. The full documentation for each tool (all configuration keys, outputs and troubleshooting) is in the README and PREREQUISITES of its folder in the repository: `code-decompiler/`, `source-code-analysis-agent/`, `ui-analysis-agent/`.

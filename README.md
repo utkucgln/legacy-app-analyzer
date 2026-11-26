@@ -4,6 +4,8 @@ Three tools that recover how a legacy Java web application works, from the deplo
 
 ## Start here
 
+**New to the toolkit? Follow the step-by-step [HANDOVER-GUIDE.md](HANDOVER-GUIDE.md)**: preparation checklists, the questions for your APIM team, installation, configuration and running each tool, reviewing the results, troubleshooting and close-down.
+
 | If… | Do this |
 |---|---|
 | **The target Windows server has no Python or internet access** (typical application server) | Download the prebuilt zip from the [latest release](../../releases/latest). Before extracting, run `Unblock-File`, then follow its `README.md` (the same file as [release-template/README.md](release-template/README.md)). Python, pip and installation are not needed; only the APIM / Azure OpenAI endpoint must be reachable. |
