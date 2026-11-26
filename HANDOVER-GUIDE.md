@@ -5,7 +5,7 @@ This guide takes you from receiving the toolkit to reviewing the analysis of you
 | Phase | What happens | Who | Typical duration |
 |---|---|---|---|
 | [0. Prepare](#phase-0-prepare) | Collect information, approvals and accounts | Project lead, APIM team, server admin, security | 1–5 days (mostly waiting for approvals) |
-| [1. Install](#phase-1-download-verify-and-install) | Download, transfer, verify and extract the release | Operator | 30 min |
+| [1. Build and install](#phase-1-build-transfer-and-verify) | Build the executables on a connected machine, transfer, verify and extract | Operator (build machine with internet) | 1 h |
 | [2. Connect to Azure OpenAI](#phase-2-connect-to-azure-openai-through-api-management) | Configure and test the model access through APIM | Operator + APIM team | 30 min |
 | [3. Legacy Decompiler](#phase-3-legacy-decompiler) | Extract evidence and reconstruct source from the deployed archive | Operator | 15 min – 2 h |
 | [4. Source Code Analysis Agents](#phase-4-source-code-analysis-agents) | AI analysis of the code: architecture, rules, findings, migration plan | Operator | 1 h – 2 days (depends on size and quota) |
@@ -132,39 +132,61 @@ Ask the application server administrator for a **read-only copy of exactly what 
 | Antivirus exclusion (recommended) | The decompiler writes thousands of small files to `D:\modernisation\work`. | Security | ☐ |
 | Data to Azure OpenAI | Decompiled/original source (secrets and card-number patterns masked) and UAT screen content/screenshots are sent to **your** Azure OpenAI deployment. Its region / data zone determines residency. | Data owner | ☐ |
 | Confidential outputs | Decompiled source and reports are the application owner's intellectual property. Restrict NTFS permissions on `D:\modernisation\work`. | Data owner | ☐ |
-| Third-party components | The release bundles open-source decompilers (Vineflower, CFR, Procyon — Apache 2.0 / MIT), Selenium IEDriverServer, Playwright, and the GitHub Copilot SDK runtime (used only as a local agent runtime, inference goes to your deployment, telemetry off). Review the GitHub Copilot SDK terms if your policy requires it. | Legal / security | ☐ |
+| Third-party components | The build bundles open-source decompilers (Vineflower, CFR, Procyon — Apache 2.0 / MIT), Selenium IEDriverServer, Playwright, and the GitHub Copilot SDK runtime (used only as a local agent runtime, inference goes to your deployment, telemetry off). Review the GitHub Copilot SDK terms if your policy requires it. | Legal / security | ☐ |
 
-**Checkpoint 0:** all boxes ticked, APIM answers received, artefact copied with matching hashes, test accounts working in a browser.
+### 0.7 Build machine
+
+The executables are built once on a separate Windows x64 machine with **Python 3.12 x64 and internet access** (PyPI or your mirror, Maven Central, GitHub). A developer workstation is usually fine. Requirements and commands are in 1.1–1.2. The target machine itself never needs internet access.
+
+**Checkpoint 0:** all boxes ticked, a build machine is available (0.7), APIM answers received, artefact copied with matching hashes, test accounts working in a browser.
 
 ---
 
-## Phase 1: Download, verify and install
+## Phase 1: Build, transfer and verify
 
-### 1.1 Download (on a workstation with internet access)
+The tools are delivered as source code. You build the executables once on a **connected build machine**, then copy the result to the target machine, which needs no Python, pip or internet access.
 
-1. Open the repository's **Releases** page and download `legacy-app-analyzer-release-<date>.zip` from the latest release.
-2. Compare its hash with the **Zip SHA-256** in the release notes:
+### 1.1 Build machine requirements
 
-   ```powershell
-   Get-FileHash .\legacy-app-analyzer-release-<date>.zip -Algorithm SHA256
-   ```
+| Item | Requirement |
+|---|---|
+| Operating system | Windows 10/11 or Windows Server 2019/2022, **x64** (the executables are built for the same platform as the target) |
+| Python | **3.12 x64** from python.org, with the `py` launcher (or pass `-Python <path to python.exe>`) |
+| Internet (HTTPS) | `pypi.org` / `files.pythonhosted.org` (or your PyPI mirror configured for pip), `repo1.maven.org`, `github.com`, `objects.githubusercontent.com` |
+| Disk | About 3 GB free |
+| Rights | Normal user; no administrator rights needed |
 
-3. Transfer the zip to the target machine through your approved channel.
+The build downloads and bundles: the Python dependencies, the decompiler jars (checksum-verified against Maven Central), the GitHub Copilot SDK agent runtime, and IEDriverServer.
 
-Alternative: build the same release yourself on a connected Windows machine with Python 3.12 x64 — clone the repository and run `.\build-release.ps1`; the result is in `release\`.
-
-### 1.2 Unblock, extract and verify (on the target machine)
+### 1.2 Build
 
 ```powershell
-Unblock-File .\legacy-app-analyzer-release-<date>.zip          # otherwise Windows may block every extracted exe
-Expand-Archive .\legacy-app-analyzer-release-<date>.zip -DestinationPath D:\
-Rename-Item D:\legacy-app-analyzer-release modernisation
+git clone <repository-url> legacy-app-analyzer          # or download the repository as a ZIP and extract it
+cd legacy-app-analyzer
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   # allows the build scripts in this window only
+.\build-release.ps1 -Out C:\build\modernisation          # about 10–20 minutes on the first run
+```
+
+It ends with `release ready: C:\build\modernisation (… MB, … files)`. Then package it and record the hash:
+
+```powershell
+Compress-Archive C:\build\modernisation C:\build\modernisation.zip
+Get-FileHash C:\build\modernisation.zip -Algorithm SHA256
+```
+
+Transfer `modernisation.zip` (about 180 MB) to the target machine through your approved channel, and compare the hash there.
+
+### 1.3 Unblock, extract and verify (on the target machine)
+
+```powershell
+Unblock-File .\modernisation.zip              # otherwise Windows may block the extracted executables
+Expand-Archive .\modernisation.zip -DestinationPath D:\
 cd D:\modernisation
 $bad = Get-Content SHA256SUMS.txt | ForEach-Object { $h, $f = $_ -split '  ', 2; if ((Get-FileHash $f -Algorithm SHA256).Hash -ne $h) { "MISMATCH $f" } }
 if ($bad) { $bad } else { 'all files verified' }
 ```
 
-### 1.3 What you have now
+### 1.4 What you have now
 
 ```text
 D:\modernisation
@@ -181,7 +203,7 @@ D:\modernisation
 
 Nothing needs to be installed. To remove the toolkit later, delete the folder.
 
-### 1.4 Smoke test
+### 1.5 Smoke test
 
 ```powershell
 .\legacy-decompiler\legacy-decompiler.exe --help
@@ -590,6 +612,9 @@ To share results outside the analysis machine, copy the HTML reports and JSON/CS
 | Symptom | Tool | Fix |
 |---|---|---|
 | "Windows protected your PC" / blocked executable | all | `Unblock-File` the zip before extracting (or re-extract); application-control approval (0.6) |
+| `build-release.ps1 cannot be loaded … not digitally signed` / `running scripts is disabled` | build | `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in the same window (1.2) |
+| `pip install failed` during the build | build | No access to PyPI: configure pip for your mirror (`pip config set global.index-url <mirror>/simple`) or allow `pypi.org` / `files.pythonhosted.org` |
+| `Copilot runtime download failed` / `IEDriverServer download failed` / `fetch-tools failed` | build | Allow `github.com`, `objects.githubusercontent.com` and `repo1.maven.org` on the build machine |
 | `java not found` | Decompiler | Set `jdk.home` to the Java folder (the one containing `bin\java.exe`) |
 | `vineflower skipped` / `recompilation skipped` | Decompiler | Informational: Java 8 or JRE. Use a portable JDK 17 for the full result. |
 | Very slow decompilation | Decompiler | Antivirus exclusion for `work\`; keep `jdk.heap` at 1g on small machines |
@@ -610,7 +635,7 @@ To share results outside the analysis machine, copy the HTML reports and JSON/CS
 
 Send, with secrets removed:
 - the full output of the failing `check` command (it never prints keys or passwords);
-- the tool version (`--help` header) and the release name;
+- the tool version (`--help` header) and the repository commit you built from (`git rev-parse --short HEAD`);
 - for runs: `summary.json` and the last 100 lines of `run.log` from the output folder;
 - the `ai` block of the configuration (it contains no key).
 
@@ -670,12 +695,12 @@ Do not send decompiled source, screenshots or reports unless your data owner has
 
 | # | Item | Owner | Done |
 |---|---|---|---|
-| 1 | Machine meets 0.1; Java available (0.2) | Server admin | ☐ |
+| 1 | Machine meets 0.1; Java available (0.2); build machine available (0.7) | Server admin | ☐ |
 | 2 | APIM answers received (0.3); key issued; body logging decision taken | APIM team, data owner | ☐ |
 | 3 | Artefact copied with matching SHA-256 (0.4) | Application server admin | ☐ |
 | 4 | UAT URL, roles, test accounts without MFA, search values (0.5) | Application owner | ☐ |
 | 5 | Executables and data flow approved (0.6) | Security, data owner | ☐ |
-| 6 | Release verified, `--help` works (Phase 1) | Operator | ☐ |
+| 6 | Release built and verified, `--help` works (Phase 1) | Operator | ☐ |
 | 7 | `legacy-decompiler check` READY and run complete (Phase 3) | Operator | ☐ |
 | 8 | `code-analyst check` READY; pilot reviewed; full run complete (Phase 4) | Operator, architect | ☐ |
 | 9 | `ui-analyst check` READY; pilot reviewed; full run and design complete (Phase 5) | Operator, application owner | ☐ |

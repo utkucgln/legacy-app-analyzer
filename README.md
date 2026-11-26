@@ -8,8 +8,7 @@ Three tools that recover how a legacy Java web application works, from the deplo
 
 | If… | Do this |
 |---|---|
-| **The target Windows server has no Python or internet access** (typical application server) | Download the prebuilt zip from the [latest release](../../releases/latest). Before extracting, run `Unblock-File`, then follow its `README.md` (the same file as [release-template/README.md](release-template/README.md)). Python, pip and installation are not needed; only the APIM / Azure OpenAI endpoint must be reachable. |
-| **You want to build the executables yourself** | On a connected Windows machine with Python 3.12 x64, run `.\build-release.ps1`. It produces the same `release\` folder. |
+| **The target Windows server has no Python or internet access** (typical application server) | Build the executables once on a connected Windows machine with Python 3.12 x64 (`.\build-release.ps1 -Out C:\build\modernisation`), copy the folder to the server, then follow its `README.md` (the same file as [release-template/README.md](release-template/README.md)). Python, pip and installation are not needed on the server; only the APIM / Azure OpenAI endpoint must be reachable. Details in Phase 1 of the guide. |
 | **You prefer a Python installation on an analysis VM** | Use each package's `install.ps1` and README (below). |
 
 **What to prepare** (details in each package's PREREQUISITES):

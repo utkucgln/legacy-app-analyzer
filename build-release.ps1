@@ -1,7 +1,7 @@
 # Builds the offline release for the application server: three folder-build executables (no Python on the target), one shared
 # GitHub Copilot runtime, IEDriverServer, the decompiler jars, configuration templates and SHA-256 checksums.
 #   .\build-release.ps1                      # -> .\release
-#   .\build-release.ps1 -Python C:\Python312\python.exe -Out D:\drop\modernisation-release
+#   .\build-release.ps1 -Out C:\build\modernisation [-Python C:\Python312\python.exe]
 # Needs, on the build machine only: Python 3.12 x64 and HTTPS to PyPI, Maven Central and GitHub.
 param([string]$Python, [string]$Out = (Join-Path $PSScriptRoot 'release'))
 $ErrorActionPreference = 'Stop'
@@ -25,8 +25,9 @@ robocopy $rt.FullName "$Out\copilot-runtime\$($rt.Name)" /E /NFL /NDL /NJH /NJS 
 if ($LASTEXITCODE -ge 8) { throw 'copy of the Copilot runtime failed' }
 Copy-Item (Join-Path $PSScriptRoot 'release-template\*') $Out -Recurse -Force
 
-$hashes = Get-ChildItem $Out -Recurse -File | Where-Object Name -ne 'SHA256SUMS.txt' | ForEach-Object {
-    "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.FullName.Substring($Out.Length + 1)
+# Relative names from -Name: substring arithmetic breaks when $Out is relative or uses 8.3 short names (C:\Users\ABCDEF~1\...).
+$hashes = Get-ChildItem $Out -Recurse -File -Name | Where-Object { $_ -ne 'SHA256SUMS.txt' } | ForEach-Object {
+    "{0}  {1}" -f (Get-FileHash (Join-Path $Out $_) -Algorithm SHA256).Hash.ToLower(), $_
 }
 $hashes | Set-Content "$Out\SHA256SUMS.txt" -Encoding ascii
 $size = (Get-ChildItem $Out -Recurse -File | Measure-Object Length -Sum).Sum / 1MB

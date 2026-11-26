@@ -1,6 +1,6 @@
 # Modernisation toolkit: run on the application server
 
-This folder runs on the application server (Windows x64) **without Python, pip or any installation**. It is the content of the release zip (`legacy-app-analyzer-release-<date>.zip`). Before extracting a downloaded zip, run `Unblock-File <zip>` (or tick *Unblock* in the zip's file properties). Otherwise Windows marks every extracted file as downloaded from the internet, and SmartScreen or application control may block the executables. Extract it, for example to `D:\modernisation` (rename the extracted `legacy-app-analyzer-release` folder), and keep the folder structure.
+This folder runs on the application server (Windows x64) **without Python, pip or any installation**. It is produced by `build-release.ps1` on a connected build machine (see `HANDOVER-GUIDE.md`, Phase 1). If you transfer it as a zip, run `Unblock-File <zip>` before extracting (or tick *Unblock* in the zip's file properties). Otherwise Windows marks every extracted file as downloaded from the internet, and SmartScreen or application control may block the executables. Place it, for example, in `D:\modernisation`, and keep the folder structure.
 
 | Folder | Content |
 |---|---|
